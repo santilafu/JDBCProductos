@@ -69,24 +69,40 @@ public class Main {
     private static final String USER = "tu_usuario";
     private static final String PASSWORD = "tu_contraseña";
     public static void main(String[] args) {
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             Scanner scanner = new Scanner(System.in)) {
-            String sql = "INSERT INTO productos (nombre, descripcion, precio) VALUES (?, ?, ?)";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                System.out.print("Nombre del producto: ");
-                String nombre = scanner.nextLine();
-                System.out.print("Descripción del producto: ");
-                String descripcion = scanner.nextLine();
-                System.out.print("Precio del producto: ");
-                double precio = scanner.nextDouble();
-                pstmt.setString(1, nombre);
-                pstmt.setString(2, descripcion);
-                pstmt.setDouble(3, precio);
-                int filasInsertadas = pstmt.executeUpdate();
-                System.out.println(filasInsertadas + " producto(s) insertado(s).");
-            }
+
+        // INSERT: metemos nombre, descripcion y precio.
+        // El id NO lo metemos porque el trigger lo pone solo.
+        String insertSql = "INSERT INTO productos (nombre, descripcion, precio) VALUES (?, ?, ?)";
+
+        // try-with-resources:
+        // Lo que se abre aquí se cierra solo al final (aunque haya errores)
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASS);
+             PreparedStatement ps = conn.prepareStatement(insertSql)) {
+
+            // 1) Primer producto
+            ps.setString(1, "Auriculares");
+            ps.setString(2, "Auriculares Bluetooth");
+            ps.setDouble(3, 59.99);
+            ps.executeUpdate(); // Ejecuta el INSERT
+
+            // 2) Segundo producto
+            ps.setString(1, "USB 64GB");
+            ps.setString(2, "Memoria USB rápida");
+            ps.setDouble(3, 12.90);
+            ps.executeUpdate();
+
+            // 3) Tercer producto
+            ps.setString(1, "Webcam");
+            ps.setString(2, "Webcam 1080p");
+            ps.setDouble(3, 34.95);
+            ps.executeUpdate();
+
+            System.out.println("Productos insertados correctamente desde Java.");
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            // Si pasa algo, lo mostramos
+            System.out.println("Error SQL: " + e.getMessage());
+            System.out.println("Código Oracle: " + e.getErrorCode());
         }
     }
 }
