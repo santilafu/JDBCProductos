@@ -65,7 +65,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Scanner;
 public class Main {
-    private static final String URL = "jdbc:oracle:thin:@localhost:1521:XE";
+    private static final String URL = "jdbc:oracle:thin:@localhost:1521/orclpdb";
     private static final String USER = "tu_usuario";
     private static final String PASSWORD = "tu_contraseña";
     public static void main(String[] args) {
